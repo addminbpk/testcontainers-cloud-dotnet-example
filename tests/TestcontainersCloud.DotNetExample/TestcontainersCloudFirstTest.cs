@@ -39,7 +39,7 @@ public sealed class TestcontainersCloudFirstTest
 
         if (versionResponse.Version.Contains("Testcontainers Desktop"))
         {
-            runtimeName = " via Testcontainers Desktop app";
+            runtimeName += " via Testcontainers Desktop app";
         }
 
         Console.WriteLine(PrettyStrings.Logo.Replace("::::::", runtimeName));
