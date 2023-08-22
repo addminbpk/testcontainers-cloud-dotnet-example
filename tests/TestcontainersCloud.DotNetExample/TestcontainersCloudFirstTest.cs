@@ -20,11 +20,11 @@ public sealed class TestcontainersCloudFirstTest
 
         using var dockerClient = dockerClientConfiguration.CreateClient();
 
-        var versionResponse = await dockerClient.System.GetVersionAsync()
+        var versionResponse = await dockerClient.System.GetSystemInfoAsync()
             .ConfigureAwait(false);
 
-        var isTestcontainersDesktop = versionResponse.Version.Contains("Testcontainers Desktop");
-        var isTestcontainersCloud = versionResponse.Version.Contains("testcontainerscloud");
+        var isTestcontainersDesktop = versionResponse.ServerVersion.Contains("Testcontainers Desktop");
+        var isTestcontainersCloud = versionResponse.ServerVersion.Contains("testcontainerscloud");
         if (!(isTestcontainersDesktop || isTestcontainersCloud))
         {
             Console.WriteLine(PrettyStrings.OhNo);
@@ -32,12 +32,12 @@ public sealed class TestcontainersCloudFirstTest
         }
 
         var runtimeName = "Testcontainers Cloud";
-        if (!versionResponse.Version.Contains("testcontainerscloud"))
+        if (!versionResponse.ServerVersion.Contains("testcontainerscloud"))
         {
-            runtimeName = versionResponse.Os;
+            runtimeName = versionResponse.OperatingSystem;
         }
 
-        if (versionResponse.Version.Contains("Testcontainers Desktop"))
+        if (versionResponse.ServerVersion.Contains("Testcontainers Desktop"))
         {
             runtimeName += " via Testcontainers Desktop app";
         }
