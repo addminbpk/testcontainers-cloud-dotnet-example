@@ -1,6 +1,7 @@
 using System;
 using System.Data.Common;
 using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
@@ -25,16 +26,19 @@ public sealed class TestcontainersCloudFirstTest
         var versionResponse = await dockerClient.System.GetSystemInfoAsync()
             .ConfigureAwait(false);
 
+        var cloudLabel = "cloud.docker.run.version";
+
+        var isDockerCloudLabel = versionResponse.Labels.Any(label => label.Contains(cloudLabel));
         var isTestcontainersDesktop = versionResponse.ServerVersion.Contains("Testcontainers Desktop");
         var isTestcontainersCloud = versionResponse.ServerVersion.Contains("testcontainerscloud");
-        if (!(isTestcontainersDesktop || isTestcontainersCloud))
+        if (!(isTestcontainersDesktop || isTestcontainersCloud || isDockerCloudLabel))
         {
             Console.WriteLine(PrettyStrings.OhNo);
             Assert.Fail();
         }
 
         var runtimeName = "Testcontainers Cloud";
-        if (!versionResponse.ServerVersion.Contains("testcontainerscloud"))
+        if (!isTestcontainersCloud && !isDockerCloudLabel)
         {
             runtimeName = versionResponse.OperatingSystem;
         }
